@@ -3,10 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Note } from '../interfaces/note.interface';
 import { Observable } from 'rxjs';
-import { environments } from 'src/app/environment/environment';
+import { environment } from '../../environment/environment';
 @Injectable({ providedIn: 'root' })
 export class NoteService {
-  private baseUrl: string = environments.baseUrl
+  private baseUrl: string = environment.baseUrl;
+
   constructor(private httpClient: HttpClient, private router: Router) {
   }
 
