@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Note } from 'src/app/interfaces/note.interface';

@@ -10,14 +10,14 @@
         <div class="mb-4">
           <label for="title" class="block text-lg font-medium">Title:</label>
           <textarea id="title"
-            class="w-full p-4 border rounded-lg resize-none h-32 overflow-y-auto max-h-[200px] focus:border-[#8e8be6] focus:ring-2 focus:ring-[#8e8be6] focus:outline-none "
+            class="w-full p-4 border rounded-lg resize-none h-20 overflow-y-auto max-h-[200px] focus:border-[#8e8be6] focus:ring-2 focus:ring-[#8e8be6] focus:outline-none "
             formControlName="title" [class.is-invalid]="noteForm.get('title')?.invalid"
             placeholder="Enter the title"></textarea>
         </div>
         <div class="mb-4">
           <label for="content" class="block text-lg font-medium">Content:</label>
           <textarea id="content"
-            class="w-full p-4 border rounded-lg resize-none h-32 overflow-y-auto max-h-[200px] focus:border-[#8e8be6] focus:ring-2 focus:ring-[#8e8be6] focus:outline-none"
+            class="w-full p-4 border rounded-lg resize-none h-20 overflow-y-auto max-h-[200px] focus:border-[#8e8be6] focus:ring-2 focus:ring-[#8e8be6] focus:outline-none"
             formControlName="content" [class.is-invalid]="noteForm.get('content')?.invalid"
             placeholder="Enter the content"></textarea>
         </div>
@@ -28,7 +28,7 @@
         </div>
       </form>
     </div>
-    <div class="p-4 max-h-[34vh] overflow-y-auto">
+    <div class="px-4  max-h-[30vh] overflow-y-auto">
       <ng-container *ngIf="!isLoading; else loadingTemplate">
         <div *ngIf="notes.length > 0; else noDataTemplate" class="flex flex-row justify-between border-b-2 pb-2 mb-4">
           <div class="w-5 text-center font-semibold text-sm sm:text-base"></div>

@@ -9,10 +9,6 @@ const routes: Routes = [
     component: CreatePageComponentsComponent,
   },
   {
-    path: 'new-note',
-    component: CreatePageComponentsComponent,
-  },
-  {
     path: 'archiveNote',
     component: ArchivedPageComponents,
   },

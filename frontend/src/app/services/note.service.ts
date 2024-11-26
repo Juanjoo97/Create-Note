@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { Note } from '../interfaces/note.interface';
 import { Observable } from 'rxjs';
 import { environment } from '../environment/environment';
 @Injectable({ providedIn: 'root' })
 export class NoteService {
-  private baseUrl: string = "https://prueba-lates.onrender.com";
+  private baseUrl: string = environment.baseUrl;
 
-  constructor(private httpClient: HttpClient, private router: Router) {
+  constructor(private httpClient: HttpClient) {
   }
 
   guardarNota(nota: { title: string, content: string }): Observable<any> {
