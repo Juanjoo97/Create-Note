@@ -5,28 +5,18 @@ import { CreatePageComponentsComponent } from './pages/createnote/createPageComp
 
 const routes: Routes = [
   {
-    path: 'Note',
+    path: '',
     component: CreatePageComponentsComponent,
-    children: [
-      { path: 'new-note', component: CreatePageComponentsComponent },
-      { path: '**', redirectTo: '' },
-    ]
+  },
+  {
+    path: 'new-note',
+    component: CreatePageComponentsComponent,
   },
   {
     path: 'archiveNote',
     component: ArchivedPageComponents,
-    children: [
-      { path: '', component: ArchivedPageComponents },
-      { path: '**', redirectTo: 'archived' },
-    ]
   },
-  {
-    path: '',
-    redirectTo: 'Note',
-    pathMatch: 'full'
-  }
-
-]
+];
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
