@@ -1,21 +1,21 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Note } from 'src/app/note/interfaces/note.interface';
-import { NoteService } from 'src/app/note/services/note.service';
-import { ModalService } from '../../../services/modal.service'
+import { Note } from 'src/app/interfaces/note.interface';
+import { ModalService } from 'src/app/services/modal.service';
+import { NoteService } from 'src/app/services/note.service';
 
 @Component({
-  selector: 'app-CreatePageComponents',
-  templateUrl: './createPageComponents.component.html',
-  styleUrls: ['./createPageComponents.component.scss'],
+  selector: 'app-UpdatePageComponents',
+  templateUrl: './ArchivedPageComponents.component.html',
+  styleUrls: ['./ArchivedPageComponents.component.scss']
 })
 
-export class CreatePageComponentsComponent implements OnInit {
+export class ArchivedPageComponents implements OnInit {
   @ViewChild('modal', { read: ViewContainerRef })
   public entry!: ViewContainerRef;
   public sub!: Subscription;
-  public edicion = false;
+  public intentoEnvio = false;
   public notaSeleccionada: Note | null = null;
   public notes: Note[] = [];
   public notesSort: Note[] = [];
@@ -24,7 +24,7 @@ export class CreatePageComponentsComponent implements OnInit {
   public noteFormEdit!: FormGroup;
   public sortOrderTitle: 'asc' | 'desc' | 'none' = 'none';
   public sortOrderContent: 'asc' | 'desc' | 'none' = 'none';
-  constructor(private noteService: NoteService, private fb: FormBuilder, private cdRef: ChangeDetectorRef, private modalService: ModalService) {
+  constructor(private noteService: NoteService, private fb: FormBuilder, private modalService: ModalService) {
     this.buildForm()
     this.buildFormEdit()
   }
@@ -47,34 +47,12 @@ export class CreatePageComponentsComponent implements OnInit {
     this.cargarNotas();
   }
 
-  enviarFormulario(event: Event) {
-    event.preventDefault();
-    if (this.noteForm.valid) {
-      const formData = this.noteForm.value;
-      this.noteService.guardarNota(formData).subscribe({
-        next: () => {
-          this.cargarNotas();
-          this.noteForm.reset();
-        },
-        error: () => {
-          this.createModal("1", "4", 'Error creating note');
-          this.sub = this.modalService.getMessage().subscribe(() => {
-            this.modalService.closeModal();
-            this.sub.unsubscribe();
-          })
-        }
-      });
-    } else {
-      console.error('Formulario no válido');
-    }
-  }
-
   cargarNotas() {
     this.sortOrderTitle = 'none';
     this.sortOrderContent = 'none';
     this.noteService.getNotes().subscribe({
       next: (notes) => {
-        this.notes = notes.filter((note) => !note.archived);
+        this.notes = notes.filter((note) => note.archived);
         this.notesSort = this.notes
         this.isLoading = false;
       },
@@ -148,11 +126,10 @@ export class CreatePageComponentsComponent implements OnInit {
     }
   }
 
-  archivarNota(id: number) {
-    this.noteService.archivarNota(id).subscribe({
+  unarchivarNota(id: number) {
+    this.noteService.unarchivarNota(id).subscribe({
       next: () => {
         this.cargarNotas();
-        this.cdRef.detectChanges();
       },
       error: () => {
         this.modalService.closeModal();
@@ -185,7 +162,6 @@ export class CreatePageComponentsComponent implements OnInit {
         this.sortOrderTitle = 'asc';
       }
     }
-
     if (field === 'content') {
       if (this.sortOrderContent === 'asc') {
         this.notesSort = [...this.notesSort].sort((a, b) => {
@@ -210,4 +186,3 @@ export class CreatePageComponentsComponent implements OnInit {
 
 
 }
-

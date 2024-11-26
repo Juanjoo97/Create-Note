@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Note } from '../interfaces/note.interface';
 import { Observable } from 'rxjs';
-import { environment } from '../../environment/environment';
+import { environment } from '../environment/environment';
 @Injectable({ providedIn: 'root' })
 export class NoteService {
   private baseUrl: string = "https://prueba-lates.onrender.com";

@@ -1,8 +1,8 @@
 import { ComponentRef, EventEmitter, Injectable, ViewContainerRef } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
-import { ModalComponent } from '../pages/modal/modal.component';
 import { FormGroup } from '@angular/forms';
 import { Note } from '../interfaces/note.interface';
+import { ModalComponent } from '../pages/modal/modal.component';
 
 @Injectable({
     providedIn: 'root'
