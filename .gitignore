@@ -1,5 +1,7 @@
+#este es del backend
 node_modules
 postgres
 dist
 .angular
 package-lock
+.env
