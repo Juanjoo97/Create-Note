@@ -48,16 +48,6 @@ La aplicación utiliza una base de datos para almacenar y recuperar las notas, b
 
 ## Nota para los archivos ejecutables
 
-Para el bash/zsh en Linux/macOS
-
-No olvides dar permisos de ejecución al script
-Ejecutar los dos archivos script (Frontend,backend)
-
-Para el bat en windows
-
-Ejecutar los dos archivos script (Frontend,backend)
-
-
-## Licencia
+Si no deseas configurar el proyecto, Para archivo .bat (WINDOWS) se encargara ejecutar los dos archivos script (Frontend,backend)
 
 

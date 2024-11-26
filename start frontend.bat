@@ -1,7 +1,9 @@
 @echo off
+:: Cambiar al directorio del frontend
+cd frontend
 
+:: Ejecutar npm start en otra nueva ventana
+start cmd /k "npm i & npm start"
 
-:: Frontend: Instalar dependencias y luego iniciar la aplicación
-start cmd /k "cd frontend && npm install"
-npm start
+:: Pausar la ventana original para evitar que se cierre
 pause

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // app.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,15 +13,15 @@ import { ActiveNotesController } from './controllers/active-notes.controllers';
   imports: [TypeOrmModule.forFeature([Note]),
   ConfigModule.forRoot(),
   TypeOrmModule.forRoot({
-  type: 'postgres',
-  host: process.env.DB_HOST,
-  port:  parseInt(process.env.DB_PORT || '5432', 10),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  autoLoadEntities: true,
-  synchronize: true,
+    type: 'postgres',
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT || '5432', 10),
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    autoLoadEntities: true,
+    synchronize: true,
   }),],
   providers: [NoteService],
   controllers: [NoteController, ArchiveController, ActiveNotesController],
 })
-export class AppModule {}
+export class AppModule { }

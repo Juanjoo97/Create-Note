@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // note.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,7 +10,7 @@ export class NoteService {
   constructor(
     @InjectRepository(Note)
     private noteRepository: Repository<Note>,
-  ) {}
+  ) { }
 
   // GetAll
   async findAll(): Promise<Note[]> {
@@ -19,13 +20,13 @@ export class NoteService {
   async findOne(id: number): Promise<Note> {
     return await this.noteRepository.findOne({ where: { id } });
   }
-  
-// Post
+
+  // Post
   async create(noteData: Partial<Note>): Promise<Note> {
     const newNote = this.noteRepository.create(noteData);
     return await this.noteRepository.save(newNote);
   }
-// Put
+  // Put
   async update(id: number, noteData: Partial<Note>): Promise<Note> {
     await this.noteRepository.update(id, noteData);
     return await this.noteRepository.findOne({ where: { id } });
@@ -37,9 +38,9 @@ export class NoteService {
     return deleteResult.affected > 0;
   }
 
-    // archive
+  // archive
   async archive(id: number): Promise<Note> {
-    const note = await this.noteRepository.findOne({ where: { id }});
+    const note = await this.noteRepository.findOne({ where: { id } });
     if (!note) {
       throw new Error('Nota no encontrada');
     }
@@ -47,9 +48,9 @@ export class NoteService {
     note.archived = true;
     return await this.noteRepository.save(note);
   }
-    // unarchive
+  // unarchive
   async unarchive(id: number): Promise<Note> {
-    const note = await this.noteRepository.findOne({ where: { id }});
+    const note = await this.noteRepository.findOne({ where: { id } });
     if (!note) {
       throw new Error('Nota no encontrada');
     }
@@ -57,13 +58,13 @@ export class NoteService {
     note.archived = false;
     return await this.noteRepository.save(note);
   }
-  
-      // findAllActive
+
+  // findAllActive
   async findAllActive(): Promise<Note[]> {
     return await this.noteRepository.find({ where: { archived: false } });
   }
 
-        // findAllArchived
+  // findAllArchived
   async findAllArchived(): Promise<Note[]> {
     return await this.noteRepository.find({ where: { archived: true } });
   }

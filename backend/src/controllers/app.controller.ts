@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // note.controller.ts
 import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import { NoteService } from '../service/app.service';
@@ -5,7 +6,7 @@ import { Note } from '../app.entity';
 
 @Controller('notes')
 export class NoteController {
-  constructor(private readonly noteService: NoteService) {}
+  constructor(private readonly noteService: NoteService) { }
 
   //GetAllNotes
   @Get()

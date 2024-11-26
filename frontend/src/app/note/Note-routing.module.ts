@@ -1,23 +1,23 @@
 import { NgModule } from '@angular/core';
-import { RouterModule,Routes} from '@angular/router'
+import { RouterModule, Routes } from '@angular/router'
 import { CreatePageComponentsComponent } from './pages/createnote/createPageComponents/createPageComponents.component';
-import { UpdatePageComponentsComponent } from './pages/archivednote/ArchivedPageComponents/ArchivedPageComponents.component';
+import { ArchivedPageComponents } from './pages/archivednote/ArchivedPageComponents/ArchivedPageComponents.component';
 
-const routes:Routes=[
+const routes: Routes = [
   {
-    path:'',
-    component:CreatePageComponentsComponent,
-    children:[
-      {path:'new-note',component:CreatePageComponentsComponent},
-      {path:'**',redirectTo:'archived'},
+    path: '',
+    component: CreatePageComponentsComponent,
+    children: [
+      { path: 'new-note', component: CreatePageComponentsComponent },
+      { path: '**', redirectTo: 'archived' },
     ]
   },
   {
-    path:'',
-    component:UpdatePageComponentsComponent,
-    children:[
-      {path:'archived',component:UpdatePageComponentsComponent},
-      {path:'**',redirectTo:'archived'},
+    path: '',
+    component: ArchivedPageComponents,
+    children: [
+      { path: 'archived', component: ArchivedPageComponents },
+      { path: '**', redirectTo: 'archived' },
     ]
   }
 ]

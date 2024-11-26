@@ -1,10 +1,11 @@
+/* eslint-disable prettier/prettier */
 
 import { Controller, Post, Param, InternalServerErrorException } from '@nestjs/common';
 import { NoteService } from '../service/app.service';
 
 @Controller('archived')
 export class ArchiveController {
-  constructor(private readonly noteService: NoteService) {}
+  constructor(private readonly noteService: NoteService) { }
 
   //Archive
   @Post('archived/:id')
@@ -17,8 +18,6 @@ export class ArchiveController {
       throw new InternalServerErrorException('Error interno al archivar la nota');
     }
   }
-  
-  
 
   //Unarchive
   @Post('unarchived/:id')
@@ -31,8 +30,4 @@ export class ArchiveController {
       throw new InternalServerErrorException('Error interno al archivar la nota');
     }
   }
-  
-
-
-
 }

@@ -1,147 +1,211 @@
-import { Component, OnInit, ViewChild, ElementRef,ChangeDetectorRef  } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'; // Importar módulos relacionados con formularios
+import { Component, OnInit, ViewChild, ChangeDetectorRef, ViewContainerRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Note } from 'src/app/note/interfaces/note.interface';
 import { NoteService } from 'src/app/note/services/note.service';
+import { ModalService } from '../../../services/modal.service'
 
 @Component({
   selector: 'app-CreatePageComponents',
   templateUrl: './createPageComponents.component.html',
-  styleUrls: ['./createPageComponents.component.css'],
-
+  styleUrls: ['./createPageComponents.component.scss'],
 })
+
 export class CreatePageComponentsComponent implements OnInit {
-  edicion = false;
-  public intentoEnvio = false;
-  notaSeleccionada: Note | null = null; // Agrega esta línea
+  @ViewChild('modal', { read: ViewContainerRef })
+  public entry!: ViewContainerRef;
+  public sub!: Subscription;
+  public edicion = false;
+  public notaSeleccionada: Note | null = null;
   public notes: Note[] = [];
-  public noteForm: FormGroup; // Nuevo formulario
-  @ViewChild('textarea', { static: false }) textarea!: ElementRef;
-  @ViewChild('titleInput', { static: false }) titleInput!: ElementRef<HTMLInputElement>;
-  constructor(private noteService: NoteService, private fb: FormBuilder,  private cdRef: ChangeDetectorRef ) {
-    // Inicializar el formulario en el constructor
+  public notesSort: Note[] = [];
+  public isLoading: boolean = true;
+  public noteForm!: FormGroup;
+  public noteFormEdit!: FormGroup;
+  public sortOrderTitle: 'asc' | 'desc' | 'none' = 'none';
+  public sortOrderContent: 'asc' | 'desc' | 'none' = 'none';
+  constructor(private noteService: NoteService, private fb: FormBuilder, private cdRef: ChangeDetectorRef, private modalService: ModalService) {
+    this.buildForm()
+    this.buildFormEdit()
+  }
+
+  private buildForm(): void {
     this.noteForm = this.fb.group({
       title: ['', Validators.required],
       content: ['', Validators.required]
     });
   }
 
+  private buildFormEdit(): void {
+    this.noteFormEdit = this.fb.group({
+      title: ['', Validators.required],
+      content: ['', Validators.required]
+    });
+  }
+
   ngOnInit() {
-    this.noteService.getNotes().subscribe(notes => this.notes = notes);
     this.cargarNotas();
   }
 
-
   enviarFormulario(event: Event) {
     event.preventDefault();
-    this.intentoEnvio = true;
     if (this.noteForm.valid) {
       const formData = this.noteForm.value;
-
-      if (this.edicion && this.notaSeleccionada) {
-        // Lógica de actualización utilizando this.notaSeleccionada.id
-        const notaId = this.notaSeleccionada.id;
-
-        if (notaId !== null && notaId !== undefined) {
-          this.noteService.actualizarNota(notaId, formData).subscribe(
-            response => {
-              console.log('Nota actualizada:', response);
-
-              // Actualizar directamente la nota en el array de notas
-              const indice = this.notes.findIndex(n => n.id === notaId);
-              if (indice !== -1) {
-                this.notes[indice] = { ...this.notaSeleccionada, ...formData };
-              }
-
-              this.noteForm.reset();
-              this.edicion = false;
-              // Otra lógica después de la actualización...
-            },
-            error => {
-              console.error('Error al actualizar la nota:', error);
-            }
-          );
-        } else {
-          console.error('El ID de la nota es nulo o indefinido');
+      this.noteService.guardarNota(formData).subscribe({
+        next: () => {
+          this.cargarNotas();
+          this.noteForm.reset();
+        },
+        error: () => {
+          this.createModal("1", "4", 'Error creating note');
+          this.sub = this.modalService.getMessage().subscribe(() => {
+            this.modalService.closeModal();
+            this.sub.unsubscribe();
+          })
         }
-      } else {
-        // Lógica de creación
-        this.noteService.guardarNota(formData).subscribe(
-          response => {
-            console.log('Nota guardada:', response);
-            this.cargarNotas();
-            this.noteForm.reset();
-            // Otra lógica después de la creación...
-          },
-          error => {
-            console.error('Error al guardar la nota:', error);
-          }
-        );
-      }
+      });
     } else {
       console.error('Formulario no válido');
     }
   }
 
   cargarNotas() {
-    this.noteService.getNotes().subscribe(
-      (notes) => {
-        // Filtrar las notas donde archived es false
+    this.sortOrderTitle = 'none';
+    this.sortOrderContent = 'none';
+    this.noteService.getNotes().subscribe({
+      next: (notes) => {
         this.notes = notes.filter((note) => !note.archived);
+        this.notesSort = this.notes
+        this.isLoading = false;
       },
-      (error) => {
-        console.error('Error al obtener notas:', error);
+      error: () => {
+        this.createModal("1", "4", 'Error loading');
+        this.sub = this.modalService.getMessage().subscribe(() => {
+          this.modalService.closeModal();
+          this.sub.unsubscribe();
+        })
+        this.isLoading = false;
       }
-    );
+    });
+  }
+
+  createModal(isSuccess: string, type: string, title?: string, description?: string) {
+    this.sub = this.modalService.openModal(
+      this.entry,
+      isSuccess,
+      type,
+      title,
+      description
+    ).subscribe(() => {
+    });
   }
 
   eliminarNota(id: number) {
-    this.noteService.eliminarNota(id).subscribe(
-      response => {
-        console.log('Nota eliminada:', response);
-        // Recargar la lista de notas después de la eliminación
-        this.cargarNotas();
-      },
-      error => {
-        console.error('Error al eliminar la nota:', error);
+    this.createModal("1", "1", '¿Are you sure to delete this note?');
+    this.sub = this.modalService.getMessage().subscribe(res => {
+      if (res === "1") {
+        this.noteService.eliminarNota(id).subscribe({
+          next: () => {
+            this.modalService.closeModal();
+            this.cargarNotas();
+            this.createModal("1", "2", '¡Note has been successfully deleted!"', "");
+            this.sub = this.modalService.getMessage().subscribe(() => {
+              this.modalService.closeModal();
+              this.sub.unsubscribe();
+            })
+          },
+          error: () => {
+            this.modalService.closeModal();
+            this.createModal("1", "4", 'Error deleting note');
+            this.sub = this.modalService.getMessage().subscribe(() => {
+              this.modalService.closeModal();
+              this.sub.unsubscribe();
+            })
+          }
+        });
       }
-    );
+      else {
+        this.modalService.closeModal();
+      }
+      this.sub.unsubscribe();
+    })
   }
+
   abrirFormularioEdicion(nota: Note) {
     this.notaSeleccionada = nota;
+    this.createModal("1", "3", 'Edit Note');
+    this.modalService.setNoteForm(this.noteFormEdit);
+    this.modalService.setNote(this.notaSeleccionada);
     if (this.notaSeleccionada) {
-      this.noteForm.setValue({
+      this.noteFormEdit.setValue({
         title: this.notaSeleccionada.title,
         content: this.notaSeleccionada.content
       });
-      this.edicion = true;
+      this.sub = this.modalService.getMessage().subscribe(() => {
+        this.cargarNotas();
+        this.sub.unsubscribe();
+      });
     }
   }
 
-
-  adjustTextarea() {
-    const textareaElement = this.textarea.nativeElement;
-    textareaElement.style.height = 'auto';
-    textareaElement.style.height = `${textareaElement.scrollHeight}px`;
-  }
-
-  adjustInputHeight() {
-    const element = this.titleInput.nativeElement;
-    element.style.height = 'auto';
-    element.style.height = `${element.scrollHeight}px`;
-  }
-
   archivarNota(id: number) {
-    this.noteService.archivarNota(id).subscribe(
-      () => {
-        console.log('Nota archivada correctamente.');
+    this.noteService.archivarNota(id).subscribe({
+      next: () => {
         this.cargarNotas();
-        // Detectar cambios después de archivar una nota
         this.cdRef.detectChanges();
       },
-      (error) => {
-        console.error('Error al archivar la nota:', error);
+      error: () => {
+        this.modalService.closeModal();
+        this.createModal("1", "4", 'Error archiving note');
+        this.sub = this.modalService.getMessage().subscribe(() => {
+          this.sub.unsubscribe();
+        })
       }
-    );
+    });
+  }
+
+  sortNotes(field: keyof Note) {
+    if (field === 'title') {
+      if (this.sortOrderTitle === 'asc') {
+        this.notesSort = [...this.notesSort].sort((a, b) => {
+          if (a.title < b.title) return 1;
+          if (a.title > b.title) return -1;
+          return 0;
+        });
+        this.sortOrderTitle = 'desc';
+      } else if (this.sortOrderTitle === 'desc') {
+        this.notesSort = [...this.notes];
+        this.sortOrderTitle = 'none';
+      } else {
+        this.notesSort = [...this.notesSort].sort((a, b) => {
+          if (a.title < b.title) return -1;
+          if (a.title > b.title) return 1;
+          return 0;
+        });
+        this.sortOrderTitle = 'asc';
+      }
+    }
+
+    if (field === 'content') {
+      if (this.sortOrderContent === 'asc') {
+        this.notesSort = [...this.notesSort].sort((a, b) => {
+          if (a.content < b.content) return 1;
+          if (a.content > b.content) return -1;
+          return 0;
+        });
+        this.sortOrderContent = 'desc';
+      } else if (this.sortOrderContent === 'desc') {
+        this.notesSort = [...this.notes];
+        this.sortOrderContent = 'none';
+      } else {
+        this.notesSort = [...this.notesSort].sort((a, b) => {
+          if (a.content < b.content) return -1;
+          if (a.content > b.content) return 1;
+          return 0;
+        });
+        this.sortOrderContent = 'asc';
+      }
+    }
   }
 
 
