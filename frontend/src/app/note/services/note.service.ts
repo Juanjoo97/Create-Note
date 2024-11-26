@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environment/environment';
 @Injectable({ providedIn: 'root' })
 export class NoteService {
-  private baseUrl: string = environment.baseUrl;
+  private baseUrl: string = "https://prueba-lates.onrender.com";
 
   constructor(private httpClient: HttpClient, private router: Router) {
   }
