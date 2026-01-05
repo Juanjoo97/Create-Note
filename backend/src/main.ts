@@ -3,15 +3,20 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-
   const app = await NestFactory.create(AppModule);
-  // Configuración CORS
+
+  // Configuración CORS corregida
   app.enableCors({
-    origin: process.env.URL,
+    origin: [
+      'https://mynoteappangular.web.app',
+      'https://mynoteappangular.firebaseapp.com',
+      'http://localhost:4200', // Para desarrollo local
+    ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
-  await app.listen(3000);
 
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
 }
 bootstrap();
