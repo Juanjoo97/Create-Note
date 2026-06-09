@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: create-note-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PORT
+        value: 3000
+      - key: URL
+        value: https://mynoteappangular.web.app
