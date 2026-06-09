@@ -1,6 +1,4 @@
-/* eslint-disable prettier/prettier */
-// note.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Note } from '../app.entity';
@@ -10,63 +8,42 @@ export class NoteService {
   constructor(
     @InjectRepository(Note)
     private noteRepository: Repository<Note>,
-  ) { }
+  ) {}
 
-  // GetAll
-  async findAll(): Promise<Note[]> {
-    return await this.noteRepository.find();
-  }
-  // GetId
-  async findOne(id: number): Promise<Note> {
-    return await this.noteRepository.findOne({ where: { id } });
+  findAll(): Promise<Note[]> {
+    return this.noteRepository.find();
   }
 
-  // Post
-  async create(noteData: Partial<Note>): Promise<Note> {
-    const newNote = this.noteRepository.create(noteData);
-    return await this.noteRepository.save(newNote);
+  findOne(id: number): Promise<Note> {
+    return this.noteRepository.findOne({ where: { id } });
   }
-  // Put
+
+  create(noteData: Partial<Note>): Promise<Note> {
+    const note = this.noteRepository.create(noteData);
+    return this.noteRepository.save(note);
+  }
+
   async update(id: number, noteData: Partial<Note>): Promise<Note> {
     await this.noteRepository.update(id, noteData);
-    return await this.noteRepository.findOne({ where: { id } });
+    return this.noteRepository.findOne({ where: { id } });
   }
 
-  // Delete
   async delete(id: number): Promise<boolean> {
-    const deleteResult = await this.noteRepository.delete(id);
-    return deleteResult.affected > 0;
+    const result = await this.noteRepository.delete(id);
+    return result.affected > 0;
   }
 
-  // archive
   async archive(id: number): Promise<Note> {
     const note = await this.noteRepository.findOne({ where: { id } });
-    if (!note) {
-      throw new Error('Nota no encontrada');
-    }
-
+    if (!note) throw new NotFoundException('Note not found');
     note.archived = true;
-    return await this.noteRepository.save(note);
+    return this.noteRepository.save(note);
   }
-  // unarchive
+
   async unarchive(id: number): Promise<Note> {
     const note = await this.noteRepository.findOne({ where: { id } });
-    if (!note) {
-      throw new Error('Nota no encontrada');
-    }
-
+    if (!note) throw new NotFoundException('Note not found');
     note.archived = false;
-    return await this.noteRepository.save(note);
+    return this.noteRepository.save(note);
   }
-
-  // findAllActive
-  async findAllActive(): Promise<Note[]> {
-    return await this.noteRepository.find({ where: { archived: false } });
-  }
-
-  // findAllArchived
-  async findAllArchived(): Promise<Note[]> {
-    return await this.noteRepository.find({ where: { archived: true } });
-  }
-
 }

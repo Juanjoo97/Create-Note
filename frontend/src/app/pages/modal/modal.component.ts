@@ -9,24 +9,16 @@ import { ModalService } from 'src/app/services/modal.service';
 export class ModalComponent implements OnInit {
     noteFormEdit: any;
     notaSeleccionada: Note | null = null;
-    public notes: Note[] = [];
-    @Input() isSuccess: string = '';
     @Input() type: string = '';
     @Input() title: string = '';
-    @Input() body: string = '';
     @Output() closeMeEvent = new EventEmitter();
     @Output() confirmEvent = new EventEmitter();
-    @Output() event: EventEmitter<any> = new EventEmitter();
 
     constructor(private modalService: ModalService, private noteService: NoteService) { }
 
     ngOnInit(): void {
         this.noteFormEdit = this.modalService.getNoteForm();
         this.notaSeleccionada = this.modalService.getNote()
-    }
-
-    cancel() {
-        this.modalService.sendMessage("0");
     }
 
     closeMe() {
@@ -50,9 +42,6 @@ export class ModalComponent implements OnInit {
         }
         this.noteService.actualizarNota(notaId, formData).subscribe({
             next: () => {
-                this.notes = this.notes.map(n =>
-                    n.id === notaId ? { ...n, ...formData } : n
-                );
                 this.noteFormEdit.reset();
                 this.modalService.sendMessage("1");
                 this.confirmEvent.emit("nota_actualizada");

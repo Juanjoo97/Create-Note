@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Note } from 'src/app/interfaces/note.interface';
@@ -15,7 +15,6 @@ export class CreatePageComponentsComponent implements OnInit {
   @ViewChild('modal', { read: ViewContainerRef })
   public entry!: ViewContainerRef;
   public sub!: Subscription;
-  public edicion = false;
   public notaSeleccionada: Note | null = null;
   public notes: Note[] = [];
   public notesSort: Note[] = [];
@@ -24,7 +23,7 @@ export class CreatePageComponentsComponent implements OnInit {
   public noteFormEdit!: FormGroup;
   public sortOrderTitle: 'asc' | 'desc' | 'none' = 'none';
   public sortOrderContent: 'asc' | 'desc' | 'none' = 'none';
-  constructor(private noteService: NoteService, private fb: FormBuilder, private cdRef: ChangeDetectorRef, private modalService: ModalService) {
+  constructor(private noteService: NoteService, private fb: FormBuilder, private modalService: ModalService) {
     this.buildForm()
     this.buildFormEdit()
   }
@@ -152,7 +151,6 @@ export class CreatePageComponentsComponent implements OnInit {
     this.noteService.archivarNota(id).subscribe({
       next: () => {
         this.cargarNotas();
-        this.cdRef.detectChanges();
       },
       error: () => {
         this.modalService.closeModal();

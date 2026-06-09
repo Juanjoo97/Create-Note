@@ -15,25 +15,15 @@ export class ArchivedPageComponents implements OnInit {
   @ViewChild('modal', { read: ViewContainerRef })
   public entry!: ViewContainerRef;
   public sub!: Subscription;
-  public intentoEnvio = false;
   public notaSeleccionada: Note | null = null;
   public notes: Note[] = [];
   public notesSort: Note[] = [];
   public isLoading: boolean = true;
-  public noteForm!: FormGroup;
   public noteFormEdit!: FormGroup;
   public sortOrderTitle: 'asc' | 'desc' | 'none' = 'none';
   public sortOrderContent: 'asc' | 'desc' | 'none' = 'none';
   constructor(private noteService: NoteService, private fb: FormBuilder, private modalService: ModalService) {
-    this.buildForm()
     this.buildFormEdit()
-  }
-
-  private buildForm(): void {
-    this.noteForm = this.fb.group({
-      title: ['', Validators.required],
-      content: ['', Validators.required]
-    });
   }
 
   private buildFormEdit(): void {

@@ -30,13 +30,11 @@ export class NoteService {
   }
 
   archivarNota(id: number): Observable<any> {
-    const url = `${this.baseUrl}/archived/archived/${id}`;
-    return this.httpClient.post(url, { responseType: 'text' });
+    return this.httpClient.patch(`${this.baseUrl}/notes/${id}/archive`, {});
   }
 
   unarchivarNota(id: number): Observable<any> {
-    const url = `${this.baseUrl}/archived/unarchived/${id}`;
-    return this.httpClient.post(url, { responseType: 'text' });
+    return this.httpClient.patch(`${this.baseUrl}/notes/${id}/unarchive`, {});
   }
 
 }
