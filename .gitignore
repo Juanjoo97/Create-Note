@@ -4,3 +4,4 @@ postgres
 dist
 .angular
 package-lock
+.env
