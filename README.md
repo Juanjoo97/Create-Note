@@ -1,53 +1,56 @@
-# Note creation
+# Note Creation
 
 ## Descripción
-"Note Creation" es una aplicación que te permite crear, editar, eliminar y archivar notas. La aplicación tiene un frontend desarrollado con Angular y un backend con NestJS. Proporciona una interfaz de usuario intuitiva para gestionar tus notas de manera eficiente. Puedes realizar las siguientes acciones:
+"Note Creation" es una aplicación para crear, editar, eliminar y archivar notas. Tiene un frontend en Angular con Tailwind CSS y un backend en NestJS con TypeORM y PostgreSQL.
 
-Crear nuevas notas con títulos y contenido personalizados.
-Editar notas existentes para realizar cambios o actualizaciones.
-Eliminar notas que ya no necesitas.
-Archivar notas para organizarlas y ocultarlas de la lista principal.
-La aplicación utiliza una base de datos para almacenar y recuperar las notas, brindándote una experiencia completa de gestión de notas. Además, el frontend y el backend están diseñados para trabajar de manera conjunta, proporcionando una interfaz de usuario fluida y una gestión eficaz de los datos en el backend.
+Funcionalidades:
 
-## Requisitos de Ejecución
+- Crear notas con título y contenido.
+- Editar notas existentes.
+- Eliminar notas.
+- Archivar y desarchivar notas.
 
-### Frontend (Angular)
+## Despliegue en producción
 
-- [Node.js](https://nodejs.org/) (v10.2.4)
-- [npm](https://www.npmjs.com/) (v20.9.0')
-- [Angular CLI](https://angular.io/cli) (v16.0.0)
+| Capa | Servicio | URL |
+|---|---|---|
+| Frontend | Firebase Hosting | https://mynoteappangular.web.app |
+| Backend | Railway (Docker) | https://create-note-production.up.railway.app |
+| Base de datos | Neon (PostgreSQL) | — |
 
-### Backend (NestJS)
+El backend se despliega automáticamente en Railway con cada push a `main` (usa `backend/Dockerfile` y `backend/railway.json`). El frontend se despliega con `firebase deploy` desde el directorio `frontend`.
 
-- [Node.js](https://nodejs.org/) (v10.2.4)
-- [npm](https://www.npmjs.com/) (v20.9.0')
-- [NestJS CLI](https://docs.nestjs.com/cli) (v10.3.0)
-- Base de datos compatible con NestJS ( Utilice una imagen de PostgreSQL por medio de docker postgres:14.3)
-- Tener instalado docker para crear la imagen con docker-compose 
+## Requisitos
 
-## Configuración
+- [Node.js](https://nodejs.org/) v18 o superior
+- [Angular CLI](https://angular.io/cli) v16
+- Una base de datos PostgreSQL (por ejemplo, una instancia gratuita en [Neon](https://neon.tech))
 
-1. **Frontend (Angular):**
-   - Navega al directorio `frontend` desde la terminal.
-   - Ejecuta `npm install` para instalar las dependencias.
-   - Ejecuta `ng serve` para iniciar el servidor de desarrollo de Angular.
+## Configuración local
 
-2. **Backend (NestJS):**
-   - Navega al directorio `backend` desde la terminal.
-   - Ejecuta `npm install` para instalar las dependencias.
-   - Ejecuta `docker-compose up` para crear la iamgen PostgreSQL  
-   - Ejecuta `npm start` para iniciar el servidor NestJS 
+1. **Backend (NestJS):**
+   - Navega al directorio `backend`.
+   - Crea un archivo `.env` con:
+     ```
+     DATABASE_URL=postgresql://usuario:password@host:5432/nombre_db
+     NODE_ENV=development
+     ```
+   - Ejecuta `npm install`.
+   - Ejecuta `npm start` (escucha en `http://localhost:3000`).
 
-## Uso
+2. **Frontend (Angular):**
+   - Navega al directorio `frontend`.
+   - Ejecuta `npm install`.
+   - Ejecuta `npm start` (abre `http://localhost:4200`).
 
-1. **Accede al Frontend:**
-   - Abre tu navegador y ve a `http://localhost:4200`.
+## API
 
-2. **Accede al Backend (NestJS):**
-   - El backend estará escuchando en `http://localhost:3000` por defecto.
-
-## Nota para los archivos ejecutables
-
-Si no deseas configurar el proyecto, Para archivo .bat (WINDOWS) se encargara ejecutar los dos archivos script (Frontend,backend)
-
-
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/notes` | Lista todas las notas |
+| GET | `/notes/:id` | Obtiene una nota |
+| POST | `/notes` | Crea una nota |
+| PUT | `/notes/:id` | Actualiza una nota |
+| DELETE | `/notes/:id` | Elimina una nota |
+| PATCH | `/notes/:id/archive` | Archiva una nota |
+| PATCH | `/notes/:id/unarchive` | Desarchiva una nota |

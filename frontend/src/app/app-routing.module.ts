@@ -7,13 +7,8 @@ const routes: Routes = [
     loadChildren: () => import('./Note.module').then(m => m.NoteModule)
   },
   {
-    path: '',
-    redirectTo: 'Note',
-    pathMatch: 'full'
-  },
-  {
     path: '**',
-    redirectTo: 'Note',
+    redirectTo: '',
   },
 ];
 
